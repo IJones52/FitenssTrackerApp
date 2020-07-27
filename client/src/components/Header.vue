@@ -6,7 +6,7 @@
                 <span class="home" @click="navigateTo({name: 'root'})">Fitness Tracker</span>
             </v-toolbar-title>
             <v-spacer/>
-            <v-toolbar-items >
+            <v-toolbar-items v-if="!$store.state.isUserLoggedIn">
                     <v-btn text dark @click="navigateTo({name: 'login'})">Log In</v-btn> 
                     <v-btn text dark @click="navigateTo({name: 'register'})">Sign Up</v-btn> 
             </v-toolbar-items>

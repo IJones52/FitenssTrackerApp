@@ -3,9 +3,9 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import Vuetify from './plugins/vuetify'
 import vuetify from './plugins/vuetify'
-
+import {sync} from 'vuex-router-sync'
+import store from '@/store/store'
 Vue.config.productionTip = false
 
 
@@ -14,6 +14,7 @@ new Vue({
   el: '#app',
   vuetify,
   router,
+  store,
   components: { App },
   template: '<App/>'
   
