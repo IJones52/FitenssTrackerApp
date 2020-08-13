@@ -1,6 +1,7 @@
 const authenticationController = require('./controllers/authenticationController')
 const authenticationControllerPolicy = require('./policies/authenticationControllerPolicy')
-const exerciseController = require('./controllers/exerciseController')
+const exerciseController = require('./controllers/exerciseController');
+const workoutController = require('./controllers/workoutController');
 
 module.exports = (app) => {
     app.post('/register', 
@@ -20,7 +21,8 @@ module.exports = (app) => {
     //Make route for all user's info for dashboard
 
     //Make a route for workouts
-
+    app.post('/workouts/new', 
+        workoutController.newWorkout)
     //Make a route for weight
 
     //Make a route for calories
