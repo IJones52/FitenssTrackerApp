@@ -36,6 +36,25 @@ module.exports =  {
                 message: "failed to create workout"
             })
         }
+    },
+
+
+    async getAllWorkouts (req,res){
+        try{
+            const id = req.query.UserId
+
+           await Workout.findAll({
+                where: {
+                    UserId: id
+                }
+            }).then(workouts => res.send(workouts))
+
+        }
+        catch (err){
+            res.status(500).send({
+                message: "Failed to retireve workouts"
+            })
+        }
     }
 
 }

@@ -13,15 +13,14 @@ module.exports =  {
             console.log("Exercise failed to create")
         }
     },
-
-
     async getAllExercises (req, res){
         try{  
-            const id = req.query.UserId     
+            const id = req.query.UserId
+
             await Exercise.findAll({
                 where: {UserId: id}
             })
-            .then(users => res.send(users))
+            .then(exercises => res.send(exercises))
         }
         catch (err){
             res.status(500).send({

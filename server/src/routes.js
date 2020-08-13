@@ -23,6 +23,8 @@ module.exports = (app) => {
     //Make a route for workouts
     app.post('/workouts/new', 
         workoutController.newWorkout)
+
+    app.get('/workouts/all', workoutController.getAllWorkouts)
     //Make a route for weight
 
     //Make a route for calories
