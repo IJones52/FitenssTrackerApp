@@ -6,8 +6,9 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import {sync} from 'vuex-router-sync'
 import store from '@/store/store'
+import VueGoogleCharts from 'vue-google-charts'
 Vue.config.productionTip = false
-
+Vue.use(VueGoogleCharts)
 
 /* eslint-disable no-new */
 new Vue({

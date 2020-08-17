@@ -1,7 +1,25 @@
 <template>
     <v-layout  column>
-        <!--Look into vue-chartjs for something for weight or calories-->
-        <v-flex  >
+        <v-layout>
+            <v-flex xs6>
+                <div class="white elevation-2">
+                <v-toolbar flat dense class="indigo" dark>
+                    <v-toolbar-title>Calorie Tracker</v-toolbar-title>
+                </v-toolbar>
+                </div>
+                <GChart type="PieChart" :data="calorieData" :options="calorieOptions" />
+            </v-flex>
+            <v-flex  xs1/>
+            <v-flex xs6>
+                <div class="white elevation-2">
+                <v-toolbar flat dense class="indigo" dark>
+                    <v-toolbar-title>Weight Tracker</v-toolbar-title>
+                </v-toolbar>
+                </div>
+                <GChart type="LineChart" :data="weightData" :options="weightOptions"/>
+            </v-flex>
+        </v-layout>
+        <v-flex >
             <div class="white elevation-2">
                 <v-toolbar flat dense class="indigo" dark>
                     <v-toolbar-title>Exercises</v-toolbar-title>
@@ -72,13 +90,35 @@
                     {text: 'Link', value: 'link'}
                 ],
                 exercises: undefined,
-                workouts: [],
+                workouts: undefined,
                 workout_headers: [
                     {text: 'Routine', align:'start', value:'name'},
                     {text: 'Exercises', value:'exercise_names'}
                 ],
+                weightData: [
+                    ['Year', 'Sales', 'Expenses', 'Profit'],
+                    ['2014', 1000, 400, 200],
+                    ['2015', 1170, 460, 250],
+                    ['2016', 660, 1120, 300],
+                    ['2017', 1030, 540, 350]
+                ],
+                weightOptions: {
                 
-            }
+                title: 'Weight',
+                curveType: 'function'
+        },
+                calorieData:[ ['Language', 'Speakers (in millions)'],
+                ['', 2100], ['Calories Consumed', 550]],
+                calorieOptions: {
+                    pieHole: .7,
+                    pieSliceText:'none',
+                    title: 'Daily Calories',
+                    slices: {
+                        0: {color: 'transparent'},
+                        1: {color:  'blue'}
+                    }
+                },
+        }
     },
     created(){
        
@@ -109,7 +149,7 @@
                         }
                     )
                     //Put the exercise names into a list for each workout
-                    const exercise_names = []
+                    const exercise_names = [1,2]
 
                     response.data.exercise_names = exercise_names
                     this.workouts = response.data
