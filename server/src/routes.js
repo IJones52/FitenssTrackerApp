@@ -4,29 +4,38 @@ const exerciseController = require('./controllers/exerciseController');
 const workoutController = require('./controllers/workoutController');
 
 module.exports = (app) => {
+    //Login Routes
     app.post('/register', 
         authenticationControllerPolicy.register,
         authenticationController.register);
 
     app.post('/login', 
         authenticationController.login);
-   
+  
+        
+    //Exercise Routes
     app.post('/exercises/new',
         exerciseController.newExercise)
    
     app.get('/exercises/all', 
         exerciseController.getAllExercises)
-
     
-    //Make route for all user's info for dashboard
+    app.get('/exercises',
+        exerciseController.getExerciseById)
+    
+    app.post('/exercises/delete',
+        exerciseController.deleteExerciseById)
+    
 
-    //Make a route for workouts
+    //Workout Routes
     app.post('/workouts/new', 
         workoutController.newWorkout)
 
     app.get('/workouts/all', workoutController.getAllWorkouts)
-    //Make a route for weight
+    
+    app.get('/workouts', workoutController.getWorkoutById)
 
-    //Make a route for calories
+    app.post('/workouts/delete', workoutController.deleteWorkoutById)
+
   
 }

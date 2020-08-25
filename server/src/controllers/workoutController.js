@@ -47,7 +47,7 @@ module.exports =  {
                 where: {
                     UserId: id
                 }
-            }).then(workouts => res.send(workouts))
+            })
 
         }
         catch (err){
@@ -55,6 +55,49 @@ module.exports =  {
                 message: "Failed to retireve workouts"
             })
         }
-    }
+    },
 
+
+    async getWorkoutById(req,res){
+        try{
+            const id = req.query.UserId
+            const workoutId = req.query.workoutId
+
+            await Workout.findOne({
+                where: {
+                    UserId: id,
+                    id: workoutId
+                }
+            })
+            .then(workout => res.send(workout))
+        }
+        catch (err){
+            res.status(500).send({
+                message: "Failed to retireve workout " + req.query.id
+            })
+         }
+    },
+
+    async deleteWorkoutById(req,res){
+        try{
+            const id = req.query.UserId
+            const workoutId = req.query.workoutId
+
+            await Workout.findOne({
+                where: {
+                    UserId: id,
+                    id: workoutId
+                }
+            })
+            .then(workout =>  workout.destroy())
+            res.send({
+                message: "Delete Successful"
+            })
+        }
+        catch (err){
+            res.status(500).send({
+                message: "Failed to delete workout " + req.query.id
+            })
+         }
+    },
 }
