@@ -30,7 +30,7 @@
                         single-line
                         hide-details>             
                         </v-text-field>
-                    <v-btn  class="mx-2" fab dark color="indigo">
+                    <v-btn  class="mx-2" @click="exerciseRedirect" fab dark color="indigo">
                         <v-icon dark>+</v-icon>
                     </v-btn>
                 </v-toolbar>
@@ -213,6 +213,10 @@
                 catch(err){
                     console.log("workouts broke")
                 }
+            },
+
+            exerciseRedirect(){
+                this.$router.push({name: 'newExercise'})
             }
 
     }
