@@ -27,13 +27,15 @@ module.exports =  {
            
             const workout = await Workout.create(req.body)
             res.send({
-                workout: workout.toJSON()
+                workout: workout
             })
 
         }
         catch(err) {
+            console.log(err)
             res.send({
-                message: "failed to create workout"
+                message: "failed to create workout",
+                error: err
             })
         }
     },
@@ -43,11 +45,12 @@ module.exports =  {
         try{
             const id = req.query.UserId
 
-           await Workout.findAll({
+           const workouts = await Workout.findAll({
                 where: {
                     UserId: id
                 }
             })
+            res.send(workouts)
 
         }
         catch (err){

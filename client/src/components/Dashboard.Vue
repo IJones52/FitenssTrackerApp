@@ -56,7 +56,6 @@
                     </v-btn>
                 </v-toolbar>
                 <v-data-table
-                v-model="selected"
                 :headers="exercise_headers"
                 :items="exercises"
                 :search="exerciseSearch"
@@ -86,7 +85,7 @@
                         single-line
                         hide-details>             
                         </v-text-field>
-                    <v-btn class="mx-2" fab dark color="indigo">
+                    <v-btn @click="workoutRedirect" class="mx-2" fab dark color="indigo">
                         <v-icon dark>+</v-icon>
                     </v-btn>
                 </v-toolbar>
@@ -97,6 +96,13 @@
                 hide-default-footer
                 height="300px"
                 >
+                 <template slot="item" slot-scope="props">
+                        <tr  @click="openWorkout(props.item)">
+                        <td>{{props.item.name}}</td>
+                        <td>{{props.item.exercise_names}}</td>
+                        </tr>
+
+                    </template>
                 </v-data-table>
             </div>
         </v-flex>
@@ -239,9 +245,17 @@
                         }
                     )
                     //Put the exercise names into a list for each workout
-                    const exercise_names = [1,2]
-
-                    response.data.exercise_names = exercise_names
+                    for(let workout in response.data){
+                        console.log(workout)
+                        console.log('exercises ' + response.data[workout].exercises)
+                        let exercise_names = []
+                        for(let exercise in JSON.parse(response.data[workout].exercises)){
+                            exercise_names.push(JSON.parse(response.data[workout].exercises)[exercise].name)
+                        }
+                        console.log(exercise_names)
+                        response.data[workout].exercise_names = exercise_names.toString()
+                    }
+                    console.log(response.data)
                     this.workouts = response.data
                 }
                 catch(err){
@@ -251,6 +265,9 @@
 
             exerciseRedirect(){
                 this.$router.push({name: 'newExercise'})
+            },
+            workoutRedirect(){
+                this.$router.push({name: 'newWorkout'})
             },
            openExercise(exercise){
                 console.log('value ' + exercise.id)
@@ -310,6 +327,7 @@
             updateCalories(){
                 console.log('data ' + this.calorieData[2][1])
                 this.calorieData[2][1] = Number(this.calorieValue)
+                //Make it so this cant be negative
                 this.calorieData[1][1] = 2100 -  Number(this.calorieValue)
 
                 console.log('data ' + this.calorieData[2][1])
