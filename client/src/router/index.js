@@ -5,6 +5,7 @@ import Register from '@/components/Register'
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
 import NewExercise from '@/components/NewExercise'
+import ViewExercise from '@/components/ViewExercise'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/exercise/new',
       name: 'newExercise',
       component: NewExercise
+    },
+    {
+      path: '/exercise',
+      name: 'viewExercise',
+      component: ViewExercise
     }
     
   ]

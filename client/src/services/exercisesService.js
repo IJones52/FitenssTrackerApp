@@ -7,5 +7,9 @@ export default {
 
     newExercise(credentials){
         return api().post('/exercises/new',credentials)
+    },
+
+    getExercise(credentials){
+        return api().get('/exercises?UserId='+ credentials.UserId + '&ExerciseId=' + credentials.ExerciseId)
     }
 }

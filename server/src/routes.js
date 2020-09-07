@@ -2,7 +2,7 @@ const authenticationController = require('./controllers/authenticationController
 const authenticationControllerPolicy = require('./policies/authenticationControllerPolicy')
 const exerciseController = require('./controllers/exerciseController');
 const workoutController = require('./controllers/workoutController');
-
+const weightController = require('./controllers/weightController')
 module.exports = (app) => {
     //Login Routes
     app.post('/register', 
@@ -37,5 +37,9 @@ module.exports = (app) => {
 
     app.post('/workouts/delete', workoutController.deleteWorkoutById)
 
-  
+    //Weight Routes
+    app.post('/weight/new', weightController.newEntry)
+
+    app.get('/weight/all', weightController.getAllEntries)
+
 }

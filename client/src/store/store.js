@@ -8,7 +8,9 @@ export default new Vuex.Store({
     state: {
         token: null,
         user: null,
-        isUserLoggedIn: false
+        isUserLoggedIn: false,
+        currentExercise: null,
+        currentWorkout: null,
     },
     mutations: {
         setToken(state,token){
@@ -23,6 +25,12 @@ export default new Vuex.Store({
         setUser(state,user){
             state.user = user
         },
+        setCurrentExercise(state, id){
+            state.currentExercise = id
+        },
+        setCurrentWorkout(state, id){
+            state.currentWorkout = id
+        },
         
     },
     actions: {
@@ -33,10 +41,18 @@ export default new Vuex.Store({
         setUser({commit}, user){
             commit('setUser', user)
         },
+        setCurrentExercise({commit}, id){
+            commit('setCurrentExercise',id)
+        },
+        setCurrentWorkout({commit},id){
+            commit('setCurrentExercise',id)
+        }
 
     },
     getters:{
-        userId: state => {return state.user.id}
+        userId: state => {return state.user.id},
+        currentExercise: state=> {return state.currentExercise},
+        currentWorkout: state=> {return state.currentWorkout}
     }
     
 })

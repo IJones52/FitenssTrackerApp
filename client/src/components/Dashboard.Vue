@@ -1,4 +1,5 @@
 <template>
+<div id="main">
     <v-layout  column>
         <v-layout>
             <v-flex xs6>
@@ -8,6 +9,17 @@
                 </v-toolbar>
                 </div>
                 <GChart type="PieChart" :data="calorieData" :options="calorieOptions" />
+                <v-expansion-panels>
+                    <v-expansion-panel>
+                        <v-expansion-panel-header><b>Update Your Calories</b></v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-text-field type="number" v-model="calorieValue" name="calorieValue" label="Custom Calorie Value"/>
+                            <v-btn class="indigo"  dark @click="updateCalories">Submit</v-btn>
+                            
+                            <!--Puta data table to display it. need a check box for recipes/ingridents-->
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-flex>
             <v-flex  xs1/>
             <v-flex xs6>
@@ -16,7 +28,16 @@
                     <v-toolbar-title>Weight Tracker</v-toolbar-title>
                 </v-toolbar>
                 </div>
-                <GChart type="AreaChart" :data="weightData" :options="weightOptions"/>
+                <GChart id="weightGraph" type="AreaChart" :data="weightData" :options="weightOptions"/>
+                <v-expansion-panels>
+                    <v-expansion-panel>
+                        <v-expansion-panel-header><b>Update Your Weight</b></v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-text-field type="number" v-model="weightValue" name="weightValue" label="Weight"/>
+                            <v-btn class="indigo" id="updateWeight" dark @click="updateWeight">Submit</v-btn>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-flex>
         </v-layout>
         <v-flex >
@@ -25,7 +46,7 @@
                     <v-toolbar-title>Exercises</v-toolbar-title>
                     <v-spacer/>
                     <v-text-field
-                        v-model="search"
+                        v-model="exerciseSearch"
                         label="Search"
                         single-line
                         hide-details>             
@@ -35,12 +56,21 @@
                     </v-btn>
                 </v-toolbar>
                 <v-data-table
+                v-model="selected"
                 :headers="exercise_headers"
                 :items="exercises"
-                :search="search"
+                :search="exerciseSearch"
                 height="300px"
                 hide-default-footer
                 >
+                   <template slot="item" slot-scope="props">
+                        <tr  @click="openExercise(props.item)">
+                        <td>{{props.item.name}}</td>
+                        <td>{{props.item.focus}}</td>
+                        <td>{{props.item.link}}</td>
+                        </tr>
+
+                    </template>
                 </v-data-table>
             </div>
         </v-flex>
@@ -51,7 +81,7 @@
                     <v-toolbar-title>Workouts</v-toolbar-title>
                     <v-spacer/>
                     <v-text-field
-                        v-model="search"
+                        v-model="workoutSearch"
                         label="Search"
                         single-line
                         hide-details>             
@@ -63,7 +93,7 @@
                 <v-data-table
                 :headers="workout_headers"
                 :items="workouts"
-                :search="search"
+                :search="workoutSearch"
                 hide-default-footer
                 height="300px"
                 >
@@ -71,15 +101,22 @@
             </div>
         </v-flex>
     </v-layout>
-    
+</div>
 </template>
 
 <script lang="js">
     import exercisesService from '@/services/exercisesService'
     import workoutService from '@/services/workoutService'
+    import weightService from '@/services/weightService'
+   
+
     export default {
     data(){
         return {
+                exerciseSearch:'',
+                workoutSearch:'',
+                calorieValue: 0,
+                weightValue: undefined,
                 exercise_headers: [
                     {
                         text: 'Exercise',
@@ -96,11 +133,7 @@
                     {text: 'Exercises', value:'exercise_names'}
                 ],
                 weightData: [
-                    ['Year', 'Sales', 'Expenses', 'Profit'],
-                    ['2014', 1000, 400, 200],
-                    ['2015', 1170, 460, 250],
-                    ['2016', 660, 1120, 300],
-                    ['2017', 1030, 540, 350]
+                    ['Date', 'Weight']
                 ],
                 weightOptions: {
                 
@@ -108,39 +141,38 @@
                 curveType: 'function',
                 hAxis: {
                     titleTextStyle: {color: '#607d8b'}, 
-                    gridlines: { count:0}, 
+                    gridlines: { color:'#37474f', count:1}, 
                     textStyle: { color: '#b0bec5', fontName: 'Roboto', fontSize: '12', bold: true}
                 },
                 vAxis: {
                     minValue: 0, 
-                    gridlines: {color:'#37474f', count:4}, 
-                    baselineColor: 'transparent'
+                    gridlines: {color:'#37474f', count:1}, 
+                    baselineColor: 'white'
                 },
                 legend: {position: 'top', alignment: 'center', textStyle: {color:'#607d8b', fontName: 'Roboto', fontSize: '12'} },
                 colors: ["#3f51b5","#2196f3","#03a9f4","#00bcd4","#009688","#4caf50","#8bc34a","#cddc39"],
                 areaOpacity: 0.24,
                 lineWidth: 1,
-                backgroundColor: 'transparent',
+                backgroundColor: 'white',
                 chartArea: {
-                    backgroundColor: "transparent",
+                    backgroundColor: "white",
                     width: '100%',
                     height: '80%'
                 },
                    
                     
                     colorAxis: {colors: ["#3f51b5","#2196f3","#03a9f4","#00bcd4"] },
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'white',
                     datalessRegionColor: '#37474f',
                     displayMode: 'regions'
                  },
-                calorieData:[ ['Language', 'Speakers (in millions)'],
-                ['', 2100], ['Calories Consumed', 550]],
+                calorieData:[ ['Daily Calories', 'cal'],
+                ['Alloted Calories', 2100], ['Calories Consumed', 0]],
                 calorieOptions: {
-                    pieHole: .7,
                     pieSliceText:'none',
                     title: 'Daily Calories',
                     slices: {
-                        0: {color: 'transparent'},
+                        0: {color: 'white'},
                         1: {color:  'blue'}
                     },
                     hAxis: {
@@ -151,25 +183,25 @@
                     vAxis: {
                         minValue: 0, 
                         gridlines: {color:'#37474f', count:4}, 
-                        baselineColor: 'transparent'
+                        baselineColor: 'white'
                     },
                     legend: {position: 'top', alignment: 'center', textStyle: {color:'#607d8b', fontName: 'Roboto', fontSize: '12'} },
                     colors: ["#3f51b5","#2196f3","#03a9f4","#00bcd4","#009688","#4caf50","#8bc34a","#cddc39"],
                     areaOpacity: 0.24,
                     lineWidth: 1,
-                    backgroundColor: 'transparent',
+                    backgroundColor: 'white',
                     chartArea: {
-                        backgroundColor: "transparent",
+                        backgroundColor: "white",
                         width: '100%',
                         height: '80%'
                     },
 
                         pieSliceBorderColor: '#263238',
                         pieSliceTextStyle:  {color:'#607d8b' },
-                        pieHole: 0.9,
+                        pieHole: 0.8,
                         bar: {groupWidth: "40" },
                         colorAxis: {colors: ["#3f51b5","#2196f3","#03a9f4","#00bcd4"] },
-                        backgroundColor: 'transparent',
+                        backgroundColor: 'white',
                         datalessRegionColor: '#37474f',
                         displayMode: 'regions'
                                     
@@ -180,6 +212,8 @@
        
         this.getExercises(this.$store.getters.userId)
         this.getWorkouts(this.$store.getters.userId)
+        this.getWeights(this.$store.getters.userId)
+        this.searchFoods()
         
     },
     methods: {
@@ -211,12 +245,75 @@
                     this.workouts = response.data
                 }
                 catch(err){
-                    console.log("workouts broke")
+                    console.log("workouts broke " + err)
                 }
             },
 
             exerciseRedirect(){
                 this.$router.push({name: 'newExercise'})
+            },
+           openExercise(exercise){
+                console.log('value ' + exercise.id)
+                this.$store.dispatch('setCurrentExercise',exercise.id)
+                this.$router.push({name: 'viewExercise'})
+            },
+
+            async getWeights(id){
+                try{
+                    const response = await weightService.getAllEntries({
+                        UserId: id
+                    })
+                    for(let item in response.data){
+                        this.weightData.push([response.data[item].date, response.data[item].value])
+                    }
+                    
+                }
+                catch(err){
+                    console.log('weight broke ' + err)
+                }
+            },
+            async updateWeight(){
+                try{
+                    const today = new Date();
+                    console.log(this.$store.getters.userId)
+                    this.weightData.push([today, this.weightValue])
+                    console.log(this.weightData)
+                    await weightService.newEntry({
+                        UserId: this.$store.getters.userId,
+                        date: today,
+                        value: this.weightValue
+                    })
+
+             
+                }
+                catch(err){
+                    console.log('weight update failed' + err)
+                }
+            },
+
+            async searchFoods(){
+                try{
+                     const {NutritionAnalysisClient} = require('edamam-api')
+                     const client = new NutritionAnalysisClient({
+                            appId: '0986c293',
+                            appKey: '01416fb3d526f651aa99316ea70b7ff7'
+                        })
+
+                     const results = await client.getNutritionData({ ingredient: 'Apple' });
+                     console.log(results)
+                }
+                catch(err){
+                    console.log('error looking up foods ' + err)
+                }
+            },
+
+            updateCalories(){
+                console.log('data ' + this.calorieData[2][1])
+                this.calorieData[2][1] = Number(this.calorieValue)
+                this.calorieData[1][1] = 2100 -  Number(this.calorieValue)
+
+                console.log('data ' + this.calorieData[2][1])
+                this.calorieData.push(['',0])
             }
 
     }
@@ -224,7 +321,10 @@
   }
 </script>
 <style scoped>
-    
+    #main{
+        width: 80%;
+        margin: auto
+    }
 </style>
 
 

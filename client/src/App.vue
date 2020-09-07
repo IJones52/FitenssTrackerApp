@@ -30,5 +30,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  /*
+  Really ugly. come up with something better
+  background-image: url("assets/treadmill.jpg");
+  background-repeat: no-repeat;*/
 }
+
 </style>
